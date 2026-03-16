@@ -1,13 +1,4 @@
 import os
-import torch
-
-NUM_THREADS = 8  # à tester : 4, 8, 12, 16 selon ta machine
-
-torch.set_num_threads(NUM_THREADS)
-torch.set_num_interop_threads(2)
-
-os.environ["OMP_NUM_THREADS"] = str(NUM_THREADS)
-os.environ["MKL_NUM_THREADS"] = str(NUM_THREADS)
 import numpy as np
 import evaluate
 
@@ -112,22 +103,21 @@ def main():
         }
 
     training_args = TrainingArguments(
-    output_dir=OUTPUT_DIR,
-    eval_strategy="epoch",
-    save_strategy="epoch",
-    logging_strategy="epoch",
-    learning_rate=2e-5,
-    per_device_train_batch_size=16,
-    per_device_eval_batch_size=16,
-    num_train_epochs=3,
-    weight_decay=0.01,
-    load_best_model_at_end=True,
-    metric_for_best_model="macro_f1",
-    greater_is_better=True,
-    report_to="none",
-    save_total_limit=2,
-    dataloader_num_workers=4,
-)
+        output_dir=OUTPUT_DIR,
+        eval_strategy="epoch",
+        save_strategy="epoch",
+        logging_strategy="epoch",
+        learning_rate=2e-5,
+        per_device_train_batch_size=16,
+        per_device_eval_batch_size=16,
+        num_train_epochs=3,
+        weight_decay=0.01,
+        load_best_model_at_end=True,
+        metric_for_best_model="macro_f1",
+        greater_is_better=True,
+        report_to="none",
+        save_total_limit=2,
+    )
 
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
