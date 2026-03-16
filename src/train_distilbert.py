@@ -1,6 +1,5 @@
 import os
 import numpy as np
-import evaluate
 
 from datasets import DatasetDict
 from transformers import (
@@ -10,6 +9,7 @@ from transformers import (
     TrainingArguments,
     Trainer,
 )
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 from data_loader import load_goemotions, get_label_names
 from preprocess import preprocess_for_single_label
@@ -53,6 +53,26 @@ def build_id2label(label_names: list[str]) -> tuple[dict[int, str], dict[str, in
     return id2label, label2id
 
 
+def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    preds = np.argmax(logits, axis=-1)
+
+    accuracy = accuracy_score(labels, preds)
+    precision, recall, f1, _ = precision_recall_fscore_support(
+        labels,
+        preds,
+        average="macro",
+        zero_division=0
+    )
+
+    return {
+        "accuracy": accuracy,
+        "macro_precision": precision,
+        "macro_recall": recall,
+        "macro_f1": f1,
+    }
+
+
 def main():
     ensure_dir("outputs")
     ensure_dir("models")
@@ -75,38 +95,6 @@ def main():
         label2id=label2id,
     )
 
-    accuracy_metric = evaluate.load("accuracy")
-    precision_metric = evaluate.load("precision")
-    recall_metric = evaluate.load("recall")
-    f1_metric = evaluate.load("f1")
-
-def compute_metrics(eval_pred):
-    logits, labels = eval_pred
-    preds = np.argmax(logits, axis=-1)
-
-    accuracy = accuracy_metric.compute(predictions=preds, references=labels)
-    precision = precision_metric.compute(
-        predictions=preds,
-        references=labels,
-        average="macro"
-    )
-    recall = recall_metric.compute(
-        predictions=preds,
-        references=labels,
-        average="macro"
-    )
-    f1 = f1_metric.compute(
-        predictions=preds,
-        references=labels,
-        average="macro"
-    )
-
-    return {
-        "accuracy": accuracy["accuracy"],
-        "macro_precision": precision["precision"],
-        "macro_recall": recall["recall"],
-        "macro_f1": f1["f1"],
-    }
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,
         eval_strategy="epoch",
