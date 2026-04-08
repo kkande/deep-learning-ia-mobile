@@ -4,7 +4,10 @@ from app.model_loader import tokenizer, model, device
 from app.utils import clean_text
 
 # Adapte l'ordre à celui de ton vrai modèle
-LABELS = ["neutral", "sad", "happy", "angry", "surprised"]
+LABELS = ["neutral", "sadness", "happy", "angry", "surprise", "amusement", "anger", "annoyance", "approval", "caring",
+         "confusion", "curiosity", "desire", "disappointment", "disapproval", "disgust", "embarrassment", "excitement",
+         "fear", "gratitude", "grief", "joy", "love", "nervousness", "optimism", "pride", "realization", "relief", "remorse",
+         ]
 
 @torch.no_grad()
 def predict_emotion(text: str):
