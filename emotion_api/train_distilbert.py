@@ -80,33 +80,34 @@ def main():
     recall_metric = evaluate.load("recall")
     f1_metric = evaluate.load("f1")
 
-def compute_metrics(eval_pred):
-    logits, labels = eval_pred
-    preds = np.argmax(logits, axis=-1)
+    def compute_metrics(eval_pred):
+        logits, labels = eval_pred
+        preds = np.argmax(logits, axis=-1)
 
-    accuracy = accuracy_metric.compute(predictions=preds, references=labels)
-    precision = precision_metric.compute(
-        predictions=preds,
-        references=labels,
-        average="macro"
-    )
-    recall = recall_metric.compute(
-        predictions=preds,
-        references=labels,
-        average="macro"
-    )
-    f1 = f1_metric.compute(
-        predictions=preds,
-        references=labels,
-        average="macro"
-    )
+        accuracy = accuracy_metric.compute(predictions=preds, references=labels)
+        precision = precision_metric.compute(
+            predictions=preds,
+            references=labels,
+            average="macro"
+        )
+        recall = recall_metric.compute(
+            predictions=preds,
+            references=labels,
+            average="macro"
+        )
+        f1 = f1_metric.compute(
+            predictions=preds,
+            references=labels,
+            average="macro"
+        )
 
-    return {
-        "accuracy": accuracy["accuracy"],
-        "macro_precision": precision["precision"],
-        "macro_recall": recall["recall"],
-        "macro_f1": f1["f1"],
-    }
+        return {
+            "accuracy": accuracy["accuracy"],
+            "macro_precision": precision["precision"],
+            "macro_recall": recall["recall"],
+            "macro_f1": f1["f1"],
+        }
+
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,
         eval_strategy="epoch",
