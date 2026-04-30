@@ -86,9 +86,23 @@ class FER2013Dataset(Dataset):
 def load_fer2013(csv_path: str):
     df = pd.read_csv(csv_path)
 
-    train_df = df[df[" Usage"] == "Training"]
-    val_df = df[df[" Usage"] == "PublicTest"]
-    test_df = df[df[" Usage"] == "PrivateTest"]
+    # Nettoyage des noms de colonnes (IMPORTANT)
+    df.columns = df.columns.str.strip()
+
+    print("Colonnes détectées :", df.columns)
+
+    # Adapter selon le nom réel
+    usage_col = None
+    for col in df.columns:
+        if col.lower() == "usage":
+            usage_col = col
+
+    if usage_col is None:
+        raise ValueError("Colonne 'usage' introuvable dans le dataset")
+
+    train_df = df[df[usage_col] == "Training"]
+    val_df = df[df[usage_col] == "PublicTest"]
+    test_df = df[df[usage_col] == "PrivateTest"]
 
     return train_df, val_df, test_df
 
