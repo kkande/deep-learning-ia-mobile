@@ -73,7 +73,7 @@ class FER2013Dataset(Dataset):
         row = self.df.iloc[idx]
 
         emotion = int(row["emotion"])
-        pixels = np.array(list(map(int, row[" pixels"].split())), dtype=np.uint8).reshape(48, 48)
+        pixels = np.array(list(map(int, row["pixels"].split())), dtype=np.uint8).reshape(48, 48)
 
         image = Image.fromarray(pixels, mode="L")
 
