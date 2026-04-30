@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score, f1_score
 # =========================
 # Configuration
 # =========================
-DATASET_PATH = "/kaggle/input/challenges-in-representation-learning-facial-expression-recognition-challenge/icml_face_data.csv"
+DATASET_PATH = "/kaggle/input/datasets/hcmushqhuy/representation-learning-fer-challenge/challenges-in-representation-learning-facial-expression-recognition-challenge/fer2013/fer2013/fer2013.csv"
 OUTPUT_DIR = "outputs/fer_run"
 MODEL_DIR = "models/fer_cnn"
 BATCH_SIZE = 64
