@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Projet Emotionia" />
+  <title>Rapport de sprint 1</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../../pdf/rapport.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Rapport de sprint 1</h1>
+<p class="author">Projet Emotionia</p>
+<p class="date">25 mars 2026</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#contexte-du-sprint" id="toc-contexte-du-sprint">1.
+Contexte du sprint</a></li>
+<li><a href="#travaux-realises" id="toc-travaux-realises">2. Travaux
+realises</a>
+<ul>
+<li><a href="#mise-en-place-de-lenvironnement"
+id="toc-mise-en-place-de-lenvironnement">2.1 Mise en place de
+l’environnement</a></li>
+<li><a href="#architecture-applicative"
+id="toc-architecture-applicative">2.2 Architecture applicative</a></li>
+<li><a href="#integration-de-la-camera"
+id="toc-integration-de-la-camera">2.3 Integration de la camera</a></li>
+<li><a href="#interface-utilisateur" id="toc-interface-utilisateur">2.4
+Interface utilisateur</a></li>
+<li><a href="#gestion-de-letat-et-donnees-de-demonstration"
+id="toc-gestion-de-letat-et-donnees-de-demonstration">2.5 Gestion de
+l’etat et donnees de demonstration</a></li>
+</ul></li>
+<li><a href="#resultats-obtenus" id="toc-resultats-obtenus">3. Resultats
+obtenus</a></li>
+<li><a href="#limites-identifiees" id="toc-limites-identifiees">4.
+Limites identifiees</a></li>
+<li><a href="#perspectives-pour-le-sprint-2"
+id="toc-perspectives-pour-le-sprint-2">5. Perspectives pour le sprint
+2</a></li>
+<li><a href="#conclusion" id="toc-conclusion">6. Conclusion</a></li>
+</ul>
+</nav>
+<h1 id="contexte-du-sprint">1. Contexte du sprint</h1>
+<p>Le projet <strong>Emotionia</strong> vise a creer une application
+Android capable d’afficher un flux camera et de presenter, a terme, une
+analyse d’emotions assistee par IA directement sur l’appareil.</p>
+<p>Ce premier sprint avait pour objectif de poser une base technique
+stable et de produire une premiere experience utilisateur fonctionnelle.
+Le travail realise s’est donc concentre sur :</p>
+<ul>
+<li>l’initialisation du projet Android ;</li>
+<li>la mise en place d’une architecture claire pour l’evolution du
+produit ;</li>
+<li>l’integration du flux camera avec <strong>CameraX</strong> ;</li>
+<li>la creation d’une interface Compose inspiree d’un tableau de bord
+d’analyse emotionnelle ;</li>
+<li>la gestion d’un etat UI simule afin de valider le parcours
+utilisateur avant l’integration du moteur IA.</li>
+</ul>
+<h1 id="travaux-realises">2. Travaux realises</h1>
+<h2 id="mise-en-place-de-lenvironnement">2.1 Mise en place de
+l’environnement</h2>
+<p>Les elements suivants ont ete configures pendant le sprint :</p>
+<ul>
+<li>creation du projet Android en <strong>Kotlin</strong> ;</li>
+<li>configuration Gradle en <strong>Kotlin DSL</strong> ;</li>
+<li>activation de <strong>Jetpack Compose</strong> pour l’interface
+utilisateur ;</li>
+<li>organisation du projet selon une logique <strong>MVVM</strong>
+;</li>
+<li>definition des dependances dans
+<code>gradle/libs.versions.toml</code>.</li>
+</ul>
+<p>Le projet cible actuellement :</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Langage</td>
+<td>Kotlin</td>
+</tr>
+<tr>
+<td>UI</td>
+<td>Jetpack Compose Material 3</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>MVVM</td>
+</tr>
+<tr>
+<td>Min SDK</td>
+<td>24</td>
+</tr>
+<tr>
+<td>Target SDK</td>
+<td>36</td>
+</tr>
+<tr>
+<td>Compile SDK</td>
+<td>36</td>
+</tr>
+</tbody>
+</table>
+<h2 id="architecture-applicative">2.2 Architecture applicative</h2>
+<p>La structure logicielle du projet a ete clarifiee des le sprint 1
+afin de faciliter les evolutions suivantes.</p>
+<pre class="text"><code>com.mobile.emotion_ia
+|- MainActivity
+|- data
+|  |- EmotionRepository
+|  `- model/EmotionData
+`- ui
+   |- emotion_screen
+   |  |- EmotionScreen
+   |  `- EmotionViewModel
+   `- theme</code></pre>
+<p>Les responsabilites sont separees de la facon suivante :</p>
+<ul>
+<li><strong>View</strong> : <code>EmotionScreen.kt</code> affiche
+l’interface Compose ;</li>
+<li><strong>ViewModel</strong> : <code>EmotionViewModel.kt</code> porte
+l’etat de l’ecran via <code>MutableStateFlow</code> ;</li>
+<li><strong>Model</strong> : <code>EmotionData.kt</code> centralise les
+donnees necessaires a l’affichage ;</li>
+<li><strong>Repository</strong> : <code>EmotionRepository.kt</code>
+prepare la couche d’acces aux donnees reelles.</li>
+</ul>
+<p>Cette base permet d’integrer plus tard la camera, le traitement IA et
+la persistence sans remettre en cause la structure generale.</p>
+<h2 id="integration-de-la-camera">2.3 Integration de la camera</h2>
+<p>Une premiere integration de <strong>CameraX</strong> a ete realisee
+dans l’application.</p>
+<p>Les points livres sont :</p>
+<ul>
+<li>declaration de la permission <code>android.permission.CAMERA</code>
+dans le manifeste ;</li>
+<li>verification de la permission a l’execution ;</li>
+<li>demande de permission depuis l’ecran principal si necessaire ;</li>
+<li>integration d’un composant <code>PreviewView</code> dans Compose via
+<code>AndroidView</code> ;</li>
+<li>liaison du flux avec <code>ProcessCameraProvider</code> ;</li>
+<li>utilisation de la <strong>camera frontale</strong> par defaut.</li>
+</ul>
+<p>Cette integration permet deja d’afficher un apercu camera dans
+l’application, ce qui valide le socle technique pour la suite.</p>
+<h2 id="interface-utilisateur">2.4 Interface utilisateur</h2>
+<p>Un premier ecran complet a ete implemente avec Jetpack Compose. Il
+reprend les principaux blocs fonctionnels attendus pour une application
+d’analyse emotionnelle :</p>
+<ul>
+<li>un titre d’application ;</li>
+<li>une carte d’apercu camera ;</li>
+<li>des barres de progression pour plusieurs emotions ;</li>
+<li>une carte d’etat indiquant le statut courant, le score, l’etat du
+modele et celui de la camera ;</li>
+<li>une rangee d’actions rapides (email, partage, camera) ;</li>
+<li>une carte de statistiques de session.</li>
+</ul>
+<p>Les emotions affichees sont :</p>
+<ul>
+<li>neutral ;</li>
+<li>sad ;</li>
+<li>happy ;</li>
+<li>angry ;</li>
+<li>surprised.</li>
+</ul>
+<p>Les animations de progression ont egalement ete ajoutees pour rendre
+l’affichage plus lisible et plus proche d’un produit final.</p>
+<h2 id="gestion-de-letat-et-donnees-de-demonstration">2.5 Gestion de
+l’etat et donnees de demonstration</h2>
+<p>Afin de valider rapidement l’experience utilisateur, l’application
+fonctionne actuellement avec des <strong>donnees simulees</strong>
+exposees par le <code>ViewModel</code>.</p>
+<p>Le modele <code>EmotionData</code> contient notamment :</p>
+<ul>
+<li>les scores d’emotions ;</li>
+<li>un message de statut ;</li>
+<li>un score de confiance ;</li>
+<li>l’etat de chargement des modeles ;</li>
+<li>l’etat d’activation de la camera ;</li>
+<li>des statistiques de session.</li>
+</ul>
+<p>Le <code>ViewModel</code> fournit egalement une action
+<code>resetStats()</code> qui reinitialise les statistiques affichees a
+l’ecran. Ce point a permis de tester le cycle complet : evenement
+utilisateur, mise a jour d’etat et rerendu Compose.</p>
+<h1 id="resultats-obtenus">3. Resultats obtenus</h1>
+<p>Au terme du sprint 1, le projet dispose d’un premier socle
+fonctionnel coherent.</p>
+<table>
+<thead>
+<tr>
+<th>Fonctionnalite</th>
+<th>Etat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Structure Android / Gradle</td>
+<td>Terminee</td>
+</tr>
+<tr>
+<td>Architecture MVVM</td>
+<td>Terminee</td>
+</tr>
+<tr>
+<td>Theme Compose et ecran principal</td>
+<td>Termines</td>
+</tr>
+<tr>
+<td>Apercu CameraX dans l’interface</td>
+<td>Termine</td>
+</tr>
+<tr>
+<td>Gestion de permission camera</td>
+<td>Terminee</td>
+</tr>
+<tr>
+<td>Etat UI via <code>StateFlow</code></td>
+<td>Termine</td>
+</tr>
+<tr>
+<td>Statistiques de session simulees</td>
+<td>Terminees</td>
+</tr>
+<tr>
+<td>Inference emotionnelle reelle</td>
+<td>Non demarree</td>
+</tr>
+<tr>
+<td>Repository branche a une source reelle</td>
+<td>Non termine</td>
+</tr>
+</tbody>
+</table>
+<p>Le sprint 1 valide donc la faisabilite de la partie interface et de
+la brique camera, tout en laissant l’integration IA comme objectif
+principal du sprint suivant.</p>
+<h1 id="limites-identifiees">4. Limites identifiees</h1>
+<p>Malgre l’avancement obtenu, plusieurs limites restent presentes en
+fin de sprint :</p>
+<ul>
+<li>les emotions affichees proviennent de valeurs simulees et non d’un
+modele IA ;</li>
+<li><code>EmotionRepositoryImpl</code> est encore un squelette non
+implemente ;</li>
+<li>aucun traitement image frame par frame n’est encore execute ;</li>
+<li>les actions d’email et de partage ne sont pas connectees a une
+logique metier ;</li>
+<li>les statistiques ne sont pas persistees localement.</li>
+</ul>
+<p>Ces limites sont normales a ce stade et correspondent au perimetre
+volontairement restreint du sprint 1.</p>
+<h1 id="perspectives-pour-le-sprint-2">5. Perspectives pour le sprint
+2</h1>
+<p>Le sprint suivant pourra s’appuyer sur la base deja mise en place
+pour accelerer le developpement. Les priorites proposees sont :</p>
+<ol type="1">
+<li>integrer le pipeline d’analyse d’image en temps reel ;</li>
+<li>connecter un modele d’IA ou un moteur de classification emotionnelle
+;</li>
+<li>remplacer les donnees simulees par des donnees issues du traitement
+reel ;</li>
+<li>finaliser la couche repository ;</li>
+<li>enrichir les actions utilisateur (partage, export, historique).</li>
+</ol>
+<h1 id="conclusion">6. Conclusion</h1>
+<p>Le sprint 1 a permis de construire une base technique propre,
+exploitable et demonstrable pour <strong>Emotionia</strong>.
+L’application dispose deja :</p>
+<ul>
+<li>d’une structure Android moderne ;</li>
+<li>d’un ecran Compose complet ;</li>
+<li>d’un apercu camera operationnel ;</li>
+<li>d’une gestion d’etat reactive ;</li>
+<li>d’un cadre d’architecture pret pour l’integration IA.</li>
+</ul>
+<p>Le projet est donc bien positionne pour entamer, au sprint 2, la
+partie la plus strategique : la reconnaissance emotionnelle reelle et
+son exploitation dans l’experience utilisateur.</p>
+</body>
+</html>

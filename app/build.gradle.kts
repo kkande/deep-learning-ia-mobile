@@ -1,13 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
+    // AGP 9+ : Kotlin est intégré — ne pas appliquer org.jetbrains.kotlin.android (conflit d’extension « kotlin »).
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    compileSdk {
-    }
+    namespace = "com.mobile"
+    compileSdk = 36
 
     defaultConfig {
+        applicationId = "com.mobile"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -37,12 +39,22 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
