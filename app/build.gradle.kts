@@ -4,13 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.mobile.emotion_ia"
     compileSdk {
-        version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.mobile.emotion_ia"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
