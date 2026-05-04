@@ -1,0 +1,13 @@
+{
+    "labels": {
+        "0": "angry",
+        "1": "disgust",
+        "2": "fear",
+        "3": "happy",
+        "4": "sad",
+        "5": "surprise",
+        "6": "neutral"
+    },
+    "image_size": 48,
+    "num_classes": 7
+}
